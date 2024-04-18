@@ -8,6 +8,7 @@
 </head>
 <body>
     <button onclick="redirect()">Go to Another Page</button>
+    
     <script>
         function redirect() {
             window.location.href = 'HomeScreen.html';
