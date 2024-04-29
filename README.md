@@ -1,1 +1,1 @@
-[link](HomeScreen.html)
+[link](index.html)
