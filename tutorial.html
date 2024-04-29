@@ -1,0 +1,214 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js" integrity="sha512-uaz5GpnQoE6t5echKlX8P52czvsIGgLPcvlzfvRubLZ1Hp8JemUDnbUiAahbVtPb+jUVrNETuXvAhDDF/N3M4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@200&family=Pixelify+Sans:wght@400..700&family=Playpen+Sans:wght@200&display=swap" rel="stylesheet">
+    <script defer src="https://unpkg.com/p5.collide2d"></script>
+  
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #tut {
+            font-size: 60px;
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color:white;
+        }
+        #controls {
+            position: absolute;
+            top: 300px;
+            left: 200px;
+            color:white;
+        }
+    </style>
+</head>
+    <body>
+        <h1 id="tut">Tutorial</h1>
+        <h2 id="controls">Press SPACE to jump, A and D to move!</h2>
+        <script>
+            let w = window.innerWidth
+            let h = window.innerHeight
+            let player
+            let moveright = true
+            let moveleft = true
+            let moveup = true
+            let jumping = false
+            let platform1 = false
+            let bottomwall = false
+            let topwall = false
+            let rightwall = false
+            let spike = false
+            let DinoImage
+            let DinoImage2
+            let DinoNumber = 0
+            let spikeimg
+            function preload() {
+                DinoImage = loadImage('dino.png')
+                DinoImage2 = loadImage('dino flipped.png')
+                spikeimg = loadImage('spike.png')
+            }
+            function setup() {
+                createCanvas(w,h)
+                player = new jumper() //defining our jumper as a new object
+            }
+
+            function jumper() {
+            //I will make a box that starts at the top of the screen and falls down with "gravity"
+            //start position of our box
+            this.x = 200
+            this.y = 500
+            //force of gravity
+            this.gravity = 0.9 
+            //opposing force
+            this.lift = -12
+            //velocity
+            this.velocity = 0
+
+
+            //function to setup the initial jumper
+            this.show = function() {
+                let DinoImages = [DinoImage,DinoImage2]
+                //here is where we determine what it will look like
+                fill('rgba(67, 151, 253, 0.9)')
+                rect(0,0,w,h)
+                image(DinoImages[DinoNumber],this.x,this.y,75,100)
+            }
+
+            
+            //function to loop on repeat within the draw function
+            this.update = function() {
+                //add current velocity
+                this.velocity += this.gravity
+                //what direction am I traveling
+                this.y += this.velocity
+                //resistance to falling
+                this.velocity *= 0.9
+
+                //makes it so the player stops falling when you hit the ground
+                if (this.y > h-200) {
+                    this.y = h-200
+                    this.velocity = 0
+                }
+
+                if (this.y < 0) {
+                    moveup = false
+                }
+                else {
+                    moveup = true
+                }
+
+                //rect(600, h-225, 100, 5);
+                //rect(500, 540, 100, 5);
+                if (platform1 === true && this.y >= h-225-100 && this.x + 75 > 600 && this.x < 600 + 100) {
+                    this.y = h-225-100;
+                    this.velocity = 0;
+                }
+                else {
+                    this.gravity = 0.9;
+                }
+
+                if (bottomwall === true) {
+                    moveright = false
+                }
+                else {
+                    moveright = true
+                }
+
+                if (topwall === true && this.y >= h-360 - 100 && this.x + 75 > 800 && this.x < 800 + 100) {
+                    this.y = h-460
+                    this.velocity = 0
+                }
+                
+                if (rightwall === true || this.x <= 0) {
+                    moveleft = false
+                } else {
+                    moveleft = true
+                }
+
+                if (spike === true) {
+                    this.x = 200
+                    this.y = 500
+                }
+                
+                if (this.x > w - 75) {
+                    window.location.href = 'level 1.html'
+                }
+            }
+
+            this.up = function() {
+                if (moveup === true && this.velocity == 0) {
+                    if (keyIsDown(32)) {
+                        this.velocity = this.lift * 3
+                        jumping = true
+                    }
+                }
+            }
+
+            this.left = function() {
+                if (moveleft === true) {
+                    if (keyIsDown(65)) {
+                        this.x -= 5
+                        DinoNumber = 1
+                    }
+                }
+            }
+            this.right = function() {
+                if (moveright === true) {
+                    if (keyIsDown(68)) {
+                        this.x += 5
+                        DinoNumber = 0
+                    }
+                }
+            }
+
+        }
+
+        function draw() {
+            clear()
+            player.show()
+            player.update()
+            player.up()
+            player.left()
+            player.right()
+
+            fill(90, 85, 87)
+            rect(0,h-100,w,100)
+
+            //platfrom 1
+            fill('white');
+            rect(600, h-225, 100, 5)
+
+            //bottom of wall
+            fill(90, 85, 87)
+            rect(800, h-350, 100, 250)
+
+            //top of wall
+            rect(800,h-360, 100,10)
+
+            //right wall
+            noStroke()
+            rect(890, h-350, 10,250)
+
+            //spike
+            image(spikeimg,1250,h-100,50,-75)
+            
+
+            platform1 = collideRectRect(player.x,player.y,75,100,600,h-225-100,100,5)
+            bottomwall = collideRectRect(player.x,player.y,75,100,800, h-350, 10, 250)
+            topwall = collideRectRect(player.x,player.y,75,100,800,h-360, 100,10)
+            rightwall = collideRectRect(player.x,player.y,75,100,890, h-350, 10,250)
+            spike = collideRectRect(player.x, player.y, 75, 100, 1250, h - 100, 50, 75) || collideRectRect(player.x, player.y, 75, 100, 1250, h - 175, 50, 75);
+        }
+
+        </script>
+    </body>
+</html>
