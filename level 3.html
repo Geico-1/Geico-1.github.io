@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traveling</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js" integrity="sha512-uaz5GpnQoE6t5echKlX8P52czvsIGgLPcvlzfvRubLZ1Hp8JemUDnbUiAahbVtPb+jUVrNETuXvAhDDF/N3M4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://p5play.org/v3/planck.min.js"></script>
+    <script src="https://p5play.org/v3/p5play.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #lose {
+            position: absolute;
+            left:38.5%;
+            font-size: 30px;
+        }
+        #travel {
+            position: absolute;
+            left:41%;
+            font-size: 30px;
+        }
+    </style>
+</head>
+<body>
+    <span id="lose"></span>
+    <span id="travel">Currently Traveling...</span>
+    <script>
+        let w = window.innerWidth
+        let h = window.innerHeight
+        let player
+        let floor
+        let cactusimg
+        let cactus
+        let cacX = w+100
+        let cacX2 = w+w/2+100
+        let cacX3 = w*2+100
+        let cactus2
+        let cactus3
+        let ms = 0
+        let number = 7
+        let dinoimg
+        function preload() {
+            cactusimg = loadImage('cactus.png')
+            dinoimg = loadImage('dino.png')
+        }
+        function setup() {
+            w = window.innerWidth
+            h = window.innerHeight
+	        createCanvas(w, h)
+            cactusimg.resize(75,125)
+            world.gravity.y = 17    
+
+            player = new Sprite()
+            player.width = 75
+            player.height = 100
+            player.x = 200
+            player.y = h-150
+            player.rotationLock = true
+            dinoimg.resize(75,100)
+            player.img = dinoimg
+            
+            floor = new Sprite()
+            floor.width = w
+            floor.height = 1
+            floor.collider = 's'
+            floor.y = h-100
+
+            cactus = new Sprite()
+            cactus2 = new Sprite()
+            cactus3 = new Sprite()
+        }   
+        
+        function time() {
+            ms = millis() / 1000
+        }
+
+        function cac() {
+            cactus.width = 75
+            cactus.friction = 1000
+            cactus.height = 125
+            cactus.x = cacX
+            cactus.y = h-160
+            cactus.rotationLock = true
+
+            cacX -= number
+            console.log(number)
+            cactus.img = cactusimg
+
+            if (cacX < -w+100) {
+                cacX = w+100
+            }
+
+            if (player.colliding(cactus)) {
+                document.getElementById('lose').innerHTML = 'YOU LOSE (Click to Retry)'
+                document.getElementById('travel').innerHTML = ''
+                cacX = w+100
+                cacX2 = w+w/2+100
+                cacX3 = w*2+100 
+                number = 0
+                player.x = 200
+                ms = 0
+            }
+        }
+
+        function cac2() {
+            cactus2.width = 75
+            cactus2.friction = 1000
+            cactus2.height = 125
+            cactus2.x = cacX2
+            cactus2.y = h-160
+            cactus2.rotationLock = true
+
+            cacX2 -= number
+            cactus2.img = cactusimg
+
+            if (cacX2 < (0-(w+w/2+100))) {
+                cacX2 = w+w/2+100
+            }
+
+            if (player.colliding(cactus2)) {
+                document.getElementById('lose').innerHTML = 'YOU LOSE (Click to Retry)'
+                document.getElementById('travel').innerHTML = ''
+                cacX = w+100
+                cacX2 = w+w/2+100
+                cacX3 = w*2+100
+                number = 0
+                player.x = 200
+                ms = 0
+            }
+        }
+
+        function cac3() {
+            cactus3.width = 75
+            cactus3.friction = 1000
+            cactus3.height = 125
+            cactus3.x = cacX3
+            cactus3.y = h-160
+            cactus3.rotationLock = true
+
+            cacX3 -= number
+            cactus3.img = cactusimg
+
+            if (cacX3 < (0-(w*2+100))) {
+                cacX3 = w*2+100
+            }
+
+            if (player.colliding(cactus3)) {
+                document.getElementById('lose').innerHTML = 'YOU LOSE (Click to Retry)'
+                document.getElementById('travel').innerHTML = ''
+                cacX = w+100
+                cacX2 = w+w/2+100
+                cacX3 = w*2+100
+                number = 0
+                player.x = 200
+                ms = 0
+            }
+        }
+        function draw() {
+            clear()
+            time() 
+            cac()
+            cac2()
+            cac3()
+            if (keyIsDown(32) && player.colliding(floor)) {
+                player.velocity.y = -10
+            }
+            if (mouse.presses()) {
+                document.getElementById('lose').innerHTML = ''
+                document.getElementById('travel').innerHTML = 'Currently Traveling...'
+                number = 7
+            }
+            if (ms > 17) {
+                window.location.href = 'level 4.html'
+            }
+        }
+    </script>
+</body>

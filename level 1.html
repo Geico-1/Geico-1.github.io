@@ -1,0 +1,182 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js" integrity="sha512-uaz5GpnQoE6t5echKlX8P52czvsIGgLPcvlzfvRubLZ1Hp8JemUDnbUiAahbVtPb+jUVrNETuXvAhDDF/N3M4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@200&family=Pixelify+Sans:wght@400..700&family=Playpen+Sans:wght@200&display=swap" rel="stylesheet">
+    <script defer src="https://unpkg.com/p5.collide2d"></script>
+  
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #tut {
+            font-size: 60px;
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        #controls {
+            position: absolute;
+            top: 300px;
+            left: 200px;
+        }
+    </style>
+</head>
+    <body>
+        <script>
+            let w = window.innerWidth
+            let h = window.innerHeight
+            let player
+            let moveright = true
+            let moveleft = true
+            let moveup = false
+            let jumping = false
+            let GrassImage
+            let DoorImage
+            let DinoImage
+            let DinoImage2
+            let DinoNumber = 0
+            let SkyImage
+            let SunImage
+            let WindowImage
+            let BedImage
+            let AsteroidImage
+            let ChatImage
+            function preload() {
+                GrassImage = loadImage('grass 2.png')
+                DoorImage = loadImage('door.png')
+                DinoImage = loadImage('dino.png')
+                DinoImage2 = loadImage('dino flipped.png')
+                SkyImage = loadImage('sky.png')
+                SunImage = loadImage('sun.png')
+                WindowImage = loadImage("window.png")
+                BedImage = loadImage('bed.png')
+                AsteroidImage = loadImage('asteroid2.png')
+                ChatImage = loadImage('pixel-speech-bubble.png')
+            }
+            function setup() {
+                createCanvas(w,h)
+                player = new jumper() //defining our jumper as a new object
+            }
+
+            function jumper() {
+            //I will make a box that starts at the top of the screen and falls down with "gravity"
+            //start position of our box
+            this.x = 200
+            this.y = 500
+            //force of gravity
+            this.gravity = 0.9 
+            //opposing force
+            this.lift = -12
+            //velocity
+            this.velocity = 0
+
+
+            //function to setup the initial jumper
+            this.show = function() {
+                //here is where we determine what it will look like
+                let DinoImages = [DinoImage,DinoImage2]
+                image(DinoImages[DinoNumber],this.x,this.y,75,100)
+                fill('rgba(181, 139, 85, 0.8)')
+                rect(0,h-400,475,300)
+                image(WindowImage,100,h-300,150,150)
+                image(DoorImage,400,h-250,75,150)
+            }
+
+            
+            //function to loop on repeat within the draw function
+            this.update = function() {
+                //add current velocity
+                this.velocity += this.gravity
+                //what direction am I traveling
+                this.y += this.velocity
+                //resistance to falling
+                this.velocity *= 0.9
+
+                //makes it so the player stops falling when you hit the ground
+                if (this.y > h-200) {
+                    this.y = h-200
+                    this.velocity = 0
+                }
+                if (this.x === 0 ) {
+                    moveleft = false
+                }
+                else {
+                    moveleft = true
+                }
+                if (this.x >= w-75) {
+                    window.location.href = 'level 2.html'
+                }
+            }
+
+            this.up = function() {
+                if (moveup === true && this.velocity == 0) {
+                    if (keyIsDown(32)) {
+                        this.velocity = this.lift * 3
+                        jumping = true
+                    }
+                }
+            }
+
+            this.left = function() {
+                if (moveleft === true) {
+                    if (keyIsDown(65)) {
+                        this.x -= 5
+                        DinoNumber = 1
+                    }
+                }
+            }
+            this.right = function() {
+                if (moveright === true) {
+                    if (keyIsDown(68)) {
+                        this.x += 5
+                        DinoNumber = 0
+                    }
+                }
+            }
+
+        }
+
+        function draw() {
+            clear()
+            noStroke()
+            image(SkyImage,0,0,w,h-100)
+            image(SunImage,w-200,25,150,150)
+
+            image(AsteroidImage,w/3,0,200,200)
+            
+
+            image(GrassImage,w/3+10,h-100,w/3,100)
+            image(GrassImage,w/3+w/3,h-100,w/3,100)
+            image(BedImage,0-100,h-293,350,300)
+
+            if (player.x >= w/2) {
+                image(ChatImage,player.x-60,h-260,400,60)
+            }
+
+            fill(100, 110, 125)
+            rect(0,h-100,500,100)
+            fill('rgba(181, 139, 85, 0.8)')
+            rect(475,h-400,25,300)
+
+            fill('grey')
+            triangle(0,h-400,250,h-600,500,h-400)
+            
+
+            player.show()
+            player.update()
+            player.up()
+            player.left()
+            player.right()
+        }
+
+        </script>
+    </body>
+</html>

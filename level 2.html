@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 2</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js" integrity="sha512-uaz5GpnQoE6t5echKlX8P52czvsIGgLPcvlzfvRubLZ1Hp8JemUDnbUiAahbVtPb+jUVrNETuXvAhDDF/N3M4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@200&family=Pixelify+Sans:wght@400..700&family=Playpen+Sans:wght@200&display=swap" rel="stylesheet">
+    <script defer src="https://unpkg.com/p5.collide2d"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+25&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #Level {
+            position: absolute;
+            font-size: 40px;
+            left:90%;
+            font-family: "Jersey 25", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+    </style>
+</head>
+<body>
+    <span id="Level">Level: 1</span>
+    <script>
+        let w = window.innerWidth
+        let h = window.innerHeight
+        let player
+        let moveright = true
+        let moveleft = true
+        let moveup = true
+        let jumping = false
+        let GrassImage
+        let DoorImage
+        let DinoImage
+        let DinoImage2
+        let DinoNumber = 0
+        let SandImage
+        let CloudImage
+        let LavaEnemy1
+        let LavaHit = false
+        let LavaEnemyHit = false
+        let PlatformOne = false
+        let PlatformTwo = false
+        let lavaX = w/2-25
+        let lavaY = h-10
+
+        function preload() {
+            DinoImage = loadImage('dino.png')
+            DinoImage2 = loadImage('dino flipped.png')
+            SandImage = loadImage('sandtexture.png')
+            CloudImage = loadImage('cloud.png')
+            LavaEnemy1 = loadImage('lava enemy.png')
+        }
+
+        function setup() {
+            createCanvas(w,h)
+            player = new jumper() //defining our jumper as a new object
+        }
+
+        function jumper() {
+            //I will make a box that starts at the top of the screen and falls down with "gravity"
+            //start position of our box
+            this.x = 200
+            this.y = 500
+            //force of gravity
+            this.gravity = 0.9 
+            //opposing force
+            this.lift = -12
+            //velocity
+            this.velocity = 0
+
+
+            //function to setup the initial jumper
+            this.show = function() {
+                //here is where we determine what it will look like
+                let DinoImages = [DinoImage,DinoImage2]
+                fill('rgba(67, 151, 253, 0.9)')
+                rect(0,0,w,h-100)
+
+                fill('rgba(67, 151, 253, 0.9)') 
+                rect(w/4,h-100,w/2,25)
+
+                fill('red')
+                image(LavaEnemy1,lavaX,lavaY,50,50)
+
+                image(DinoImages[DinoNumber],this.x,this.y,75,100)
+            }
+
+            
+            //function to loop on repeat within the draw function
+            this.update = function() {
+                //add current velocity
+                this.velocity += this.gravity
+                //what direction am I traveling
+                this.y += this.velocity
+                //resistance to falling
+                this.velocity *= 0.9
+
+                LavaHit = collideRectRect(player.x, player.y, 75, 100,w/4,h-75,w/2,75)
+
+                //rect(w/4-50,h-225,100,5)
+                //makes it so the player stops falling when you hit the ground
+                if (this.y > h-200 && this.x > -75 && this.x <= w/4-20) {
+                    this.y = h-200
+                    this.velocity = 0
+                }
+
+                if (this.x > w-50) {
+                    window.location.href = 'level 3.html'
+                }
+
+                if (this.y > h-200 && this.x >= (w/4)*3-50) {
+                    this.y = h-200
+                    this.velocity = 0
+                }
+
+                if (this.y > h-200 && (this.x > w/4 && this.x < (w/4)*3)) {
+                    moveleft = false
+                    moveright = false
+                }
+                else {
+                    moveleft = true
+                    moveright = true
+                }
+
+                if (LavaHit === true) {
+                    this.x = 100
+                }
+
+                if (this.x <= 0) {
+                    moveleft = false
+                }
+                else {
+                    moveleft = true
+                }
+
+                //w/4-50, h-225, 100, 5
+                if (PlatformOne === true && this.y >= h-225-100 && this.x + 75 > w/4-50 && this.x < w/4-50 + 100) {
+                    this.y = h-225-100
+                    this.velocity = 0
+                }
+                
+                //(w/4+100,h-300,w/2-200,5)
+                if (PlatformTwo === true && this.y >= h-400) {
+                    this.y = h-400
+                    this.velocity = 0
+                }
+
+                if (LavaEnemyHit === true) {
+                    this.x = 200
+                }
+            }
+
+            this.up = function() {
+                if (moveup === true && this.velocity == 0) {
+                    if (keyIsDown(32)) {
+                        this.velocity = this.lift * 3
+                        jumping = true
+                    }
+                }
+            }
+
+            this.left = function() {
+                if (moveleft === true) {
+                    if (keyIsDown(65)) {
+                        this.x -= 5
+                        DinoNumber = 1
+                    }
+                }
+            }
+            this.right = function() {
+                if (moveright === true) {
+                    if (keyIsDown(68)) {
+                        this.x += 5
+                        DinoNumber = 0
+                    }
+                }
+            }
+        }
+
+        function LavaEnemy() {
+            let up = 15
+            lavaY -= up
+            if (lavaY <= -50) {
+                lavaY = h-10
+            }
+        }
+
+        function draw() {
+            clear()
+            noStroke()
+            player.show()
+            player.update()
+            player.up()
+            player.left()
+            player.right()
+            LavaEnemy()
+
+            fill('red')
+            rect(w/4,h-75,w/2,75)
+
+            fill('white');
+            rect(w/4-50,h-225,100,5)
+
+            PlatformOne = collideRectRect(player.x,player.y,75,100,w/4-25,h-225-100,62,5)
+            PlatformTwo = collideRectRect(player.x,player.y,75,100,w/4+120,h-400,w/2-240,5)
+            LavaEnemyHit = collideRectRect(player.x,player.y,65,90,lavaX,lavaY,25,25)
+
+            console.log(PlatformTwo)
+            image(SandImage,0,h-100,w/4,100)
+            image(SandImage,(w/4)*3,h-100,w/4,100)
+            image(SandImage,w/4+100,h-300,w/2-200,5)
+            image(CloudImage,w/2,0,250,300)
+            image(CloudImage,w/4,50,250,300)
+            image(CloudImage,w/8-125,-50,250,300)
+            image(CloudImage,w-350,25,250,300)
+        }
+    </script>
+</body>
+</html>
