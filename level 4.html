@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 4</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js" integrity="sha512-uaz5GpnQoE6t5echKlX8P52czvsIGgLPcvlzfvRubLZ1Hp8JemUDnbUiAahbVtPb+jUVrNETuXvAhDDF/N3M4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://p5play.org/v3/planck.min.js"></script>
+    <script src="https://p5play.org/v3/p5play.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+25&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/addons/p5.sound.js" integrity="sha512-TU9AWtV5uUZPX8dbBAH8NQF1tSdigPRRT82vllAQ1Ke28puiqLA6ZVKxtUGlgrH6yWFnkKy+sE6luNEGH9ar0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #Level {
+            position: absolute;
+            font-size: 40px;
+            left:90%;
+            font-family: "Jersey 25", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+        #teach {
+            position: absolute;
+            font-size: 40px;
+            top: 50%;
+            left:80%;
+            font-family: "Jersey 25", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+    </style>
+</head>
+<body>
+    <span id="Level">Level: 3</span>
+    <span id="teach">Get the Coin To Pass</span>
+    <script>
+        let w = window.innerWidth
+        let h = window.innerHeight
+        let player
+        let floor
+        let floorimg
+        let floorimg2
+        let platform1
+        let platform2
+        let floor2
+        let floor3
+        let floor4
+        let floor5
+        let coin
+        let coinimage
+        let grassimg
+        let DinoImage
+        let DinoImage2
+        let pass = false
+        let Door
+        let rocketImage
+        let jumpsound
+        let coinsound
+
+        function preload() {
+            coinimage = loadImage('coin.gif')
+            grassimg = loadImage('grass 2.png')
+            DinoImage = loadImage('dino.png')
+            DinoImage2 = loadImage('dino flipped.png')
+            rocketImage = loadImage('rocket.png')
+            coinsound = loadSound('coin sound.mp3')
+            jumpsound = loadSound('jump sound.mp3')
+        }
+        function setup() {
+	        createCanvas(w, h)
+            world.gravity.y = 17
+            coinimage.resize(75,75)
+            grassimg.resize(w/2,100)
+            DinoImage.resize(75,100)
+            DinoImage2.resize(75,100)
+            rocketImage.resize(200, 250)
+
+            player = new Sprite()
+            player.width = 75
+            player.height = 100
+            player.rotationLock = true
+            player.friction = 0
+            player.img = DinoImage
+            player.x = 300
+            player.y = h-100
+
+            floor = new Sprite()
+            floor.width = w+200
+            floor.height = 100  
+            floor.collider = 's'
+            floor.y = h
+            floor.color = 'black'
+
+            floorimg = new Sprite()
+            floorimg.x = w/4
+            floorimg.width = w/2
+            floorimg.height = 100  
+            floorimg.collider = 'n'
+            floorimg.y = h
+            floorimg.img = grassimg
+
+            floorimg2 = new Sprite()
+            floorimg2.x = w/4 * 3
+            floorimg2.width = w/2
+            floorimg2.height = 100  
+            floorimg2.collider = 'n'    
+            floorimg2.y = h
+            floorimg2.img = grassimg
+
+            floor2 = new Sprite()
+            floor2.width = 60
+            floor2.height = 5
+            floor2.collider = 's'
+            floor2.y = h-200
+            floor2.x = 100
+            floor2.color = 'green'
+
+            floor3 = new Sprite()
+            floor3.width = 60
+            floor3.height = 5
+            floor3.collider = 's'
+            floor3.y = h-350
+            floor3.x = 300
+            floor3.color = 'green'
+
+            floor4 = new Sprite()
+            floor4.width = 60
+            floor4.height = 5
+            floor4.collider = 's'
+            floor4.y = h-450
+            floor4.x = 500
+            floor4.color = 'green'
+
+            floor5 = new Sprite()
+            floor5.width = 400
+            floor5.height = 5
+            floor5.collider = 's'
+            floor5.y = h-550
+            floor5.x = w-200
+            floor5.color = 'green'
+
+            platform1 = new Sprite(w/2, 200, 60, 5, 'k');
+	        platform1.color = 'green';
+
+            platform2 = new Sprite(w/2 + 200, 200, 60, 5, 'k');
+	        platform2.color = 'green';
+
+            coin = new Sprite()
+            coin.width = 75
+            coin.height = 75
+            coin.collider = 's'
+            coin.x = w-150
+            coin.y = h-600
+            coin.img = coinimage
+
+            Door = new Sprite()
+            Door.width = 200
+            Door.height = 250
+            Door.y = h-130
+            Door.x = w-200
+            Door.collider = 's'
+            Door.img = rocketImage
+        }
+
+        function collectCoin() {
+            if (player.collides(coin)) {
+	            coin.remove()
+                coinsound.play()
+                pass = true
+            }
+        }
+
+        function draw() {
+            clear()
+            noStroke()
+            collectCoin()
+            fill('rgba(67, 151, 253, 0.9)')
+            rect(0,0,w,h)
+
+            platform1.vel.y = cos(frameCount * 2.2) * 3;
+            platform2.vel.y = cos(frameCount * 1.7) * 3;
+            if (kb.pressing('left')) {
+                 player.vel.x = -5;
+                 player.img = DinoImage2
+            }
+            else if (kb.pressing('right')) {
+                player.vel.x = 5;
+                player.img = DinoImage
+            }
+            else {
+                player.vel.x = 0;
+            }
+
+            if (kb.presses('space') && (player.colliding(floor) || player.colliding(floor2) || player.colliding(floor3) || player.colliding(floor4) || player.colliding(floor5))) {
+                player.vel.y = 50
+                jumpsound.play()
+            }
+
+            if (player.colliding(Door) && pass === true) {
+                window.location.href = 'level 5.html'
+            }
+        }
+    </script>
+</body>
+</html>
