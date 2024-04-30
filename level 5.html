@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 5</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js" integrity="sha512-uaz5GpnQoE6t5echKlX8P52czvsIGgLPcvlzfvRubLZ1Hp8JemUDnbUiAahbVtPb+jUVrNETuXvAhDDF/N3M4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://p5play.org/v3/planck.min.js"></script>
+    <script src="https://p5play.org/v3/p5play.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #time {
+            position: absolute;
+            color: white;
+            font-size: 40px;
+        }
+    </style>
+</head>
+<body>
+    <span id="time"></span>
+    <script>
+        let w = window.innerWidth
+        let h = window.innerHeight
+        let ms
+        let player
+        let rocketImage
+        let rock
+        let rock2
+        let rock3
+        let spaceimage
+        let rockimage
+
+        function preload() {
+            rocketImage = loadImage('rocket.png')
+            spaceimage = loadImage('space.jpeg')
+            rockimage = loadImage('rock.png')
+        }
+
+        function setup() {
+	        createCanvas(w, h)
+            world.gravity.y = 0
+            rocketImage.resize(200,200)
+            rockimage.resize(200,200)
+
+            player = new Sprite()
+            player.x = w/2
+            player.y = h-200
+            player.width = 100
+            player.height = 200
+            player.img = rocketImage
+            player.rotationLock = true
+
+            rock = new Sprite()
+            rock.x = Math.floor(Math.random()*w)
+            rock.y = -300
+            rock.width = 150
+            rock.height = 150
+            rock.rotationLock = true
+            rock.img = rockimage
+
+            rock2 = new Sprite()
+            rock2.x = Math.floor(Math.random()*w)
+            rock2.y = -500
+            rock2.width = 150
+            rock2.height = 150
+            rock2.rotationLock = true
+            rock2.img = rockimage
+
+            rock3 = new Sprite()
+            rock3.x = Math.floor(Math.random()*w)
+            rock3.y = -700
+            rock3.width = 150
+            rock3.height = 150
+            rock3.rotationLock = true
+            rock3.img = rockimage
+        }
+
+        function rockone() {
+            rock.vel.y = 6
+
+            if (rock.y > h+200) {
+                rock.y = 0
+                rock.x = Math.floor(Math.random()*w)
+            }
+
+            if (player.collides(rock)) {
+                rock3.y = -400
+                rock2.y = -200
+                rock.y = 0
+                player.x = w/2
+                player.y = h-200
+            }
+        }
+
+        function rocktwo() {
+            rock2.vel.y = 6
+
+            if (rock2.y > h+200) {
+                rock2.y = -200
+                rock2.x = Math.floor(Math.random()*w)
+            }
+
+            if (player.collides(rock2)) {
+                rock3.y = -400
+                rock2.y = -200
+                rock.y = 0
+                player.x = w/2
+                player.y = h-200
+            }
+        }
+
+        function rockthree() {
+            rock3.vel.y = 6
+
+            if (rock3.y > h+200) {
+                rock3.y = -400
+                rock3.x = Math.floor(Math.random()*w)
+            }
+
+            if (player.collides(rock3)) {
+                rock3.y = -400
+                rock2.y = -200
+                rock.y = 0
+                player.x = w/2
+                player.y = h-200
+            }
+        }
+
+        function time() {
+            ms = millis() / 1000
+        }
+
+        function draw() {
+            clear()
+            rockone()
+            rocktwo()
+            rockthree()
+            time()
+            
+            document.getElementById('time').innerHTML = 'Traveling: ' + Math.round(ms) + ' sec'
+            image(spaceimage,0,0,w,h)
+
+            if (ms>20) {
+                window.location.href = 'level 6.html'
+            }
+
+            player.speed = 6;
+	
+            if (kb.pressing('up')) {
+                player.direction = -90;
+            } else if (kb.pressing('down')) {
+                player.direction = 90;
+            } else if (kb.pressing('left')) {
+                player.direction = 180;
+            } else if (kb.pressing('right')) {
+                player.direction = 0;
+            } else {
+            player.speed = 0;
+            }
+        }
+    </script>
+</body>
+</html>

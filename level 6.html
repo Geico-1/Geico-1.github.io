@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js" integrity="sha512-uaz5GpnQoE6t5echKlX8P52czvsIGgLPcvlzfvRubLZ1Hp8JemUDnbUiAahbVtPb+jUVrNETuXvAhDDF/N3M4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://p5play.org/v3/planck.min.js"></script>
+    <script src="https://p5play.org/v3/p5play.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+25&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #winner {
+            position: absolute;
+            color: white;
+            font-family: "Jersey 25", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+            font-size: 60px;
+            left: 28%;
+        }
+    </style>
+</head>
+<body>
+    <span id="winner">Press E to Blow up the Nuke!</span>
+    <script>
+        let w = window.innerWidth
+        let h = window.innerHeight
+        let player
+        let moonimage
+        let spaceimage
+        let floor
+        let image3
+        let image2
+        let wall
+        let wall2
+        let DinoImage
+        let DinoImage2
+        let NukeImage
+        let nuke
+        let rocketimg
+
+        function preload() {
+            moonimage = loadImage('moontexture.webp')
+            spaceimage = loadImage('space.jpeg')
+            DinoImage = loadImage('dino.png')
+            DinoImage2 = loadImage('dino flipped.png')
+            NukeImage = loadImage('nuke.png')
+            rocketimg = loadImage('rocket.png')
+        }
+
+        function setup() {
+            createCanvas(w,h)
+            moonimage.resize(w/2,200)
+            DinoImage.resize(75,100)
+            DinoImage2.resize(75,100)
+
+            world.gravity.y = 17
+            player = new Sprite()
+            player.height = 100
+            player.width = 75
+            player.x = 200
+            player.y = h-200
+            player.img = DinoImage
+
+            floor = new Sprite()
+            floor.x = w/2
+            floor.y = h
+            floor.collider = 's'
+            floor.width = w+100
+            floor.height = 200
+
+            let nuke = new Sprite()
+            nuke.x = w-200
+            nuke.y = h-350
+            nuke.width = 200
+            nuke.height = 400
+            nuke.img = NukeImage
+            nuke.drag = 0
+            nuke.friction = 1000
+            nuke.rotationLock = true
+
+            wall = new Sprite()
+            wall.x = -10
+            wall.y = h/2
+            wall.width = 1
+            wall.height = h
+            wall.collider = 's'
+
+            wall2 = new Sprite()
+            wall2.x = w+10
+            wall2.y = h/2
+            wall2.width = 1
+            wall2.height = h
+            wall2.collider = 's'
+
+            image3 = new Sprite()
+            image3.x = w/4
+            image3.y = h
+            image3.collider = 'n'
+            image3.width = w/2
+            image3.height = 200
+            image3.img = moonimage
+
+            image2 = new Sprite()
+            image2.x = w/4 *3   
+            image2.y = h
+            image2.collider = 'n'
+            image2.width = w/2
+            image2.height = 200
+            image2.img = moonimage
+        } 
+        
+        function draw() {
+            clear()
+            noStroke()
+
+            image(spaceimage,0,0,w,h)
+            image(rocketimg,50,h-300,250,300)
+            if (kb.pressing('left')) {
+                 player.vel.x = -5;
+                 player.img = DinoImage2
+            }
+            else if (kb.pressing('right')) {
+                player.vel.x = 5;
+                player.img = DinoImage
+            }
+            else {
+                player.vel.x = 0;
+            }
+
+            if (kb.presses('e')) {
+                window.location.href = 'level 7.html'
+            }
+        }
+    </script>
+</body>
+</html>
